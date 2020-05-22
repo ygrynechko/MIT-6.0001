@@ -76,23 +76,33 @@ def get_word_score(word, n):
     lowercase letters, so you will have to handle uppercase and mixed case strings 
     appropriately. 
 
-	The score for a word is the product of two components:
+    The score for a word is the product of two components:
 
-	The first component is the sum of the points for letters in the word.
-	The second component is the larger of:
+    The first component is the sum of the points for letters in the word.
+    The second component is the larger of:
             1, or
             7*wordlen - 3*(n-wordlen), where wordlen is the length of the word
             and n is the hand length when the word was played
 
-	Letters are scored as in Scrabble; A is worth 1, B is
-	worth 3, C is worth 3, D is worth 2, E is worth 1, and so on.
+    Letters are scored as in Scrabble; A is worth 1, B is
+    worth 3, C is worth 3, D is worth 2, E is worth 1, and so on.
 
     word: string
     n: int >= 0
     returns: int >= 0
     """
+    word = word.lower()
+    value_from_letters = 0
+    #sum the value of the letters for the word with the use of SCRABBLE_LETTER_VALUES
+    for char in word:
+        value_from_letters = value_from_letters + int(SCRABBLE_LETTER_VALUES[char])
+        
+    #calculate the second component and decide if 1 is bigger, if bigger use 1
+    value_of_hand = 7*int(len(word)) - 3*(int(n)-int(len(word)))
+    if value_of_hand < 1:
+        value_of_hand = 1
+    return(value_from_letters* value_of_hand)
     
-    pass  # TO DO... Remove this line when you implement this function
 
 #
 # Make sure you understand how this function works and what it does!
@@ -146,6 +156,7 @@ def deal_hand(n):
     
     return hand
 
+
 #
 # Problem #2: Update a hand by removing letters
 #
@@ -167,8 +178,20 @@ def update_hand(hand, word):
     hand: dictionary (string -> int)    
     returns: dictionary (string -> int)
     """
-
-    pass  # TO DO... Remove this line when you implement this function
+    #get value of n to call deal_hand(n)
+    word = word.lower()
+    n = 0
+    new_hand = hand.copy()
+    #update dictionary to remove used letters
+    for char in word:
+        if char in new_hand.keys():
+            new_hand[char] -= 1
+            n+=1
+            if new_hand[char] < 1:
+                new_hand.pop(char)
+    #below function would update hand with the use of deal hand function with shorter n 
+    #hand.update(deal_hand(n))
+    return new_hand
 
 #
 # Problem #3: Test word validity
